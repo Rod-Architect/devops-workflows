@@ -6,9 +6,9 @@ on:
         required: true
         type: string
     secrets:
-      TAILSCALE_OAUTH_CLIENT_ID:
+      TS_OAUTH_CLIENT_ID:
         required: true
-      TAILSCALE_OAUTH_SECRET:
+      TS_OAUTH_SECRET:
         required: true
       KUBECONFIG:
         required: true
@@ -19,11 +19,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    - name: Connect Tailscale
-      uses: tailscale/github-action@v2
+    - name: Tailscale  
+      uses: tailscale/github-action@v3
       with:
-        oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
-        oauth-secret: ${{ secrets.TAILSCALE_OAUTH_SECRET }}
+        oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+        oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+        tags: tag:ci
     
     - name: Setup kubectl
       run: |

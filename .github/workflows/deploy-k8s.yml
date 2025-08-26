@@ -1,0 +1,32 @@
+name: Deploy to K8s
+on:
+  workflow_call:
+    inputs:
+      manifest_path:
+        required: true
+        type: string
+    secrets:
+      TAILSCALE_OAUTH_CLIENT_ID:
+        required: true
+      TAILSCALE_OAUTH_SECRET:
+        required: true
+      KUBECONFIG:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Connect Tailscale
+      uses: tailscale/github-action@v2
+      with:
+        oauth-client-id: ${{ secrets.TAILSCALE_OAUTH_CLIENT_ID }}
+        oauth-secret: ${{ secrets.TAILSCALE_OAUTH_SECRET }}
+    
+    - name: Setup kubectl
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
+        export KUBECONFIG=kubeconfig
+        kubectl apply -f ${{ inputs.manifest_path }}

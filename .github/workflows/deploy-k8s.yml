@@ -31,10 +31,4 @@ jobs:
         KUBECONFIG: ./kubeconfig
       run: |
         echo "${{ secrets.KUBECONFIG }}" | base64 -d > kubeconfig
-        kubectl get nodes
-        echo "=== Debugging manifest path ==="
-        echo "Manifest path input: ${{ inputs.manifest_path }}"
-        ls -la ${{ inputs.manifest_path }}
-        find ${{ inputs.manifest_path }} -name "*.yaml" -o -name "*.yml"
-        echo "=== End debug ==="
         kubectl apply -f ${{ inputs.manifest_path }} -R
